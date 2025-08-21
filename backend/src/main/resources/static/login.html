@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Chat App</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="auth-container">
+    <div class="auth-card">
+      <h1>Welcome!</h1>
+      <p class="auth-subtitle">Login to continue chatting</p>
+      <form id="loginForm">
+        <label>Email</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+        
+        <label>Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+        
+        <button type="button" id="loginBtn" class="btn-primary">Login</button>
+      </form>
+      <p class="auth-footer">Don't have an account? 
+        <a href="signup.html">Sign up</a>
+      </p>
+    </div>
+  </div>
+  <script src="js/auth.js"></script>
+</body>
+</html>
