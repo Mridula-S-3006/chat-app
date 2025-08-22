@@ -2,6 +2,17 @@ let stompClient = null;
 let activeChatUser = null;
 let currentUser = null;
 
+function showCurrentUser() {
+    let display = document.getElementById("currentUserDisplay");
+    if (!display) {
+        display = document.createElement("div");
+        display.id = "currentUserDisplay";
+        display.classList.add("current-user-display");
+        document.body.appendChild(display);
+    }
+    display.textContent = "Logged in as: " + currentUser;
+}
+
 window.onload = () => {
     fetch("/api/auth/current-user")
         .then(res => {
@@ -10,6 +21,7 @@ window.onload = () => {
         })
         .then(data => {
             currentUser = data.username;
+            showCurrentUser();
             connectWebSocket();
         })
         .catch(err => console.error("Error fetching current user:", err));
@@ -54,13 +66,13 @@ function openChat(username) {
     const chatMessages = document.getElementById("chatMessages");
     chatMessages.innerHTML = "";
 
-
     fetch(`/messages/${currentUser}/${activeChatUser}`)
         .then(res => res.json())
         .then(messages => {
             messages.forEach(m => {
                 const cls = m.sender.username === currentUser ? "my-message" : "other-message";
-                showMessage(m.sender.username, m.messageText, cls);
+                const time = new Date(m.sentAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                showMessage(m.sender.username, m.messageText, cls, time);
             });
         });
 
@@ -71,14 +83,13 @@ function openChat(username) {
         });
     }
 
-
     stompClient.subscribe(`/topic/messages/${currentUser}.${activeChatUser}`, function (msg) {
         const m = JSON.parse(msg.body);
         const cls = m.sender.username === currentUser ? "my-message" : "other-message";
-        showMessage(m.sender.username, m.messageText, cls);
+        const time = new Date(m.sentAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        showMessage(m.sender.username, m.messageText, cls, time);
     });
 }
-
 
 document.getElementById("sendBtn").addEventListener("click", function () {
     const input = document.getElementById("messageInput");
@@ -93,13 +104,19 @@ document.getElementById("sendBtn").addEventListener("click", function () {
     }
 });
 
-
-function showMessage(sender, messageText, cls) {
+function showMessage(sender, messageText, cls, timestamp) {
     const chatMessages = document.getElementById("chatMessages");
     const div = document.createElement("div");
     div.classList.add("message");
     div.classList.add(cls);
-    div.innerHTML = `<strong>${sender}:</strong> ${messageText}`;
+
+    div.innerHTML = `
+        <div class="message-content">
+            <strong>${sender}:</strong> ${messageText}
+        </div>
+        <div class="message-timestamp">${timestamp}</div>
+    `;
+
     chatMessages.appendChild(div);
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
