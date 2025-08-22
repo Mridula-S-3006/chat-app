@@ -8,23 +8,18 @@
 </head>
 <body>
     <div class="chat-app">
-        <!-- Sidebar -->
         <div class="sidebar">
             <div class="sidebar-header">
                 <input type="text" id="searchUser" placeholder="Search users...">
             </div>
             <div class="chat-list" id="chatList">
-                <!-- User search results injected here -->
             </div>
         </div>
-
-        <!-- Chat Window -->
         <div class="chat-window">
             <div class="chat-header">
                 <h2 id="userDisplayName">Select a user</h2>
             </div>
             <div class="chat-messages" id="chatMessages">
-                <!-- Messages injected here -->
             </div>
             <div class="chat-input">
                 <input type="text" id="messageInput" placeholder="Type a message..." disabled>
@@ -33,7 +28,6 @@
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
     <script src="js/chat.js"></script>

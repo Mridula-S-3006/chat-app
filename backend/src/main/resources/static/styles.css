@@ -8,7 +8,7 @@ body {
     margin: 0;
 }
 
-/* Auth pages */
+
 .auth-container {
     display: flex;
     flex-direction: column;
@@ -36,7 +36,7 @@ body {
     cursor: pointer;
 }
 
-/* Chat container */
+
 .chat-container {
     width: 500px;
     max-height: 90vh;
@@ -48,7 +48,6 @@ body {
     overflow: hidden;
 }
 
-/* Chat header */
 .chat-header {
     padding: 15px;
     border-bottom: 1px solid #ccc;
@@ -57,7 +56,6 @@ body {
     align-items: center;
 }
 
-/* Messages section */
 .chat-messages {
     flex: 1;
     padding: 15px;
@@ -67,7 +65,6 @@ body {
     flex-direction: column;
 }
 
-/* Chat input */
 .chat-input {
     display: flex;
     border-top: 1px solid #ccc;
@@ -90,7 +87,6 @@ body {
     border-radius: 5px;
 }
 
-/* Full chat app layout */
 .chat-app {
     display: flex;
     width: 100vw;
@@ -98,7 +94,6 @@ body {
     background: #ececec;
 }
 
-/* Sidebar */
 .sidebar {
     width: 30%;
     max-width: 350px;
@@ -108,7 +103,6 @@ body {
     border-right: 1px solid #ccc;
 }
 
-/* Sidebar header (search bar) */
 .sidebar-header {
     padding: 15px;
     border-bottom: 1px solid #ccc;
@@ -139,7 +133,6 @@ body {
     background: #f9f9f9;
 }
 
-/* Chat window */
 .chat-window {
     flex: 1;
     display: flex;
@@ -165,7 +158,6 @@ body {
     flex-direction: column;
 }
 
-/* Chat input inside chat window */
 .chat-window .chat-input {
     display: flex;
     border-top: 1px solid #ccc;
@@ -190,7 +182,7 @@ body {
     cursor: pointer;
 }
 
-/* Messages bubbles */
+
 .message {
     margin-bottom: 10px;
     padding: 8px 12px;
@@ -213,7 +205,6 @@ body {
     float: left;
 }
 
-/* Custom classes for dynamic JS messages */
 .my-message {
     background: #dcf8c6;
     align-self: flex-end;
@@ -240,7 +231,6 @@ body {
     clear: both;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .sidebar {
         display: none; 

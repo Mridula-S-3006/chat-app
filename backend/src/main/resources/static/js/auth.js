@@ -18,7 +18,6 @@ if (signupBtn) {
       alert(text);
 
       if (text === "Signup successful") {
-        // Optionally auto-login after signup
         const loginRes = await fetch("/api/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -39,7 +38,6 @@ if (signupBtn) {
   });
 }
 
-// Login
 const loginBtn = document.getElementById("loginBtn");
 if (loginBtn) {
   loginBtn.addEventListener("click", async () => {

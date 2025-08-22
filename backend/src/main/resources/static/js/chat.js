@@ -2,7 +2,6 @@ let stompClient = null;
 let activeChatUser = null;
 let currentUser = null;
 
-// start everything on page load
 window.onload = () => {
     fetch("/api/auth/current-user")
         .then(res => {
@@ -16,7 +15,6 @@ window.onload = () => {
         .catch(err => console.error("Error fetching current user:", err));
 };
 
-// connect to WebSocket
 function connectWebSocket() {
     const socket = new SockJS("/chat-websocket");
     stompClient = Stomp.over(socket);
@@ -26,7 +24,6 @@ function connectWebSocket() {
     });
 }
 
-// search bar input
 document.getElementById("searchUser").addEventListener("input", function () {
     let query = this.value.trim();
     const chatList = document.getElementById("chatList");
@@ -48,7 +45,6 @@ document.getElementById("searchUser").addEventListener("input", function () {
     }
 });
 
-// open chat
 function openChat(username) {
     activeChatUser = username;
     document.getElementById("userDisplayName").textContent = username;
@@ -58,7 +54,7 @@ function openChat(username) {
     const chatMessages = document.getElementById("chatMessages");
     chatMessages.innerHTML = "";
 
-    // fetch chat history
+
     fetch(`/messages/${currentUser}/${activeChatUser}`)
         .then(res => res.json())
         .then(messages => {
@@ -68,14 +64,14 @@ function openChat(username) {
             });
         });
 
-    // unsubscribe old topics
+
     if (stompClient && stompClient.subscriptions) {
         Object.keys(stompClient.subscriptions).forEach(id => {
             stompClient.unsubscribe(id);
         });
     }
 
-    // subscribe to private topic
+
     stompClient.subscribe(`/topic/messages/${currentUser}.${activeChatUser}`, function (msg) {
         const m = JSON.parse(msg.body);
         const cls = m.sender.username === currentUser ? "my-message" : "other-message";
@@ -83,7 +79,7 @@ function openChat(username) {
     });
 }
 
-// send message
+
 document.getElementById("sendBtn").addEventListener("click", function () {
     const input = document.getElementById("messageInput");
     const text = input.value.trim();
@@ -97,11 +93,11 @@ document.getElementById("sendBtn").addEventListener("click", function () {
     }
 });
 
-// display message in UI
+
 function showMessage(sender, messageText, cls) {
     const chatMessages = document.getElementById("chatMessages");
     const div = document.createElement("div");
-    div.classList.add("message"); // wrapper for alignment
+    div.classList.add("message");
     div.classList.add(cls);
     div.innerHTML = `<strong>${sender}:</strong> ${messageText}`;
     chatMessages.appendChild(div);
