@@ -3,12 +3,12 @@ const signupBtn = document.getElementById("signupBtn");
 if (signupBtn) {
   signupBtn.addEventListener("click", async () => {
     const username = document.getElementById("username").value;
-    const name = document.getElementById("name").value; // changed from displayName
+    const name = document.getElementById("name").value;
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
     try {
-      const res = await fetch("http://localhost:8080/api/auth/signup", {
+      const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, name, email, password }),
@@ -18,8 +18,19 @@ if (signupBtn) {
       alert(text);
 
       if (text === "Signup successful") {
-        // Redirect to login after successful signup
-        window.location.href = "login.html";
+        // Optionally auto-login after signup
+        const loginRes = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+
+        if (loginRes.ok) {
+          window.location.href = "chat.html";
+        } else {
+          alert("Signup succeeded but auto-login failed. Please login manually.");
+          window.location.href = "login.html";
+        }
       }
     } catch (error) {
       console.error("Signup error:", error);
@@ -36,17 +47,17 @@ if (loginBtn) {
     const password = document.getElementById("password").value;
 
     try {
-      const res = await fetch("http://localhost:8080/api/auth/login", {
+      const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
-      const text = await res.text();
-      alert(text);
-
-      if (text.startsWith("Login successful")) {
+      if (res.ok) {
         window.location.href = "chat.html";
+      } else {
+        const text = await res.text();
+        alert(text);
       }
     } catch (error) {
       console.error("Login error:", error);

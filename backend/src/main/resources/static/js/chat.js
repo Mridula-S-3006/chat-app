@@ -1,6 +1,20 @@
 let stompClient = null;
-let currentUser = null;     // logged-in user (TODO: set this from backend auth/session)
-let activeChatUser = null;  // person we are chatting with
+let activeChatUser = null;
+let currentUser = null;
+
+// start everything on page load
+window.onload = () => {
+    fetch("/api/auth/current-user")
+        .then(res => {
+            if (!res.ok) throw new Error("Not logged in");
+            return res.json();
+        })
+        .then(data => {
+            currentUser = data.username;
+            connectWebSocket();
+        })
+        .catch(err => console.error("Error fetching current user:", err));
+};
 
 // connect to WebSocket
 function connectWebSocket() {
@@ -12,17 +26,16 @@ function connectWebSocket() {
     });
 }
 
-// search bar event
+// search bar input
 document.getElementById("searchUser").addEventListener("input", function () {
     let query = this.value.trim();
+    const chatList = document.getElementById("chatList");
+    chatList.innerHTML = "";
 
     if (query.length > 1) {
         fetch(`/users?query=${query}`)
             .then(res => res.json())
             .then(users => {
-                const chatList = document.getElementById("chatList");
-                chatList.innerHTML = "";
-
                 users.forEach(u => {
                     const div = document.createElement("div");
                     div.classList.add("chat-list-item");
@@ -35,14 +48,13 @@ document.getElementById("searchUser").addEventListener("input", function () {
     }
 });
 
-// open chat with a specific user
+// open chat
 function openChat(username) {
     activeChatUser = username;
     document.getElementById("userDisplayName").textContent = username;
     document.getElementById("messageInput").disabled = false;
     document.getElementById("sendBtn").disabled = false;
 
-    // clear old messages
     const chatMessages = document.getElementById("chatMessages");
     chatMessages.innerHTML = "";
 
@@ -50,10 +62,13 @@ function openChat(username) {
     fetch(`/messages/${currentUser}/${activeChatUser}`)
         .then(res => res.json())
         .then(messages => {
-            messages.forEach(m => showMessage(m.sender, m.content));
+            messages.forEach(m => {
+                const cls = m.sender.username === currentUser ? "my-message" : "other-message";
+                showMessage(m.sender.username, m.messageText, cls);
+            });
         });
 
-    // unsubscribe old topic if any
+    // unsubscribe old topics
     if (stompClient && stompClient.subscriptions) {
         Object.keys(stompClient.subscriptions).forEach(id => {
             stompClient.unsubscribe(id);
@@ -63,7 +78,8 @@ function openChat(username) {
     // subscribe to private topic
     stompClient.subscribe(`/topic/messages/${currentUser}.${activeChatUser}`, function (msg) {
         const m = JSON.parse(msg.body);
-        showMessage(m.sender, m.content);
+        const cls = m.sender.username === currentUser ? "my-message" : "other-message";
+        showMessage(m.sender.username, m.messageText, cls);
     });
 }
 
@@ -77,22 +93,17 @@ document.getElementById("sendBtn").addEventListener("click", function () {
             sender: currentUser,
             content: text
         }));
-
         input.value = "";
     }
 });
 
-// show message in UI
-function showMessage(sender, content) {
+// display message in UI
+function showMessage(sender, messageText, cls) {
     const chatMessages = document.getElementById("chatMessages");
     const div = document.createElement("div");
-    div.classList.add("message");
-    div.innerHTML = `<strong>${sender}:</strong> ${content}`;
+    div.classList.add("message"); // wrapper for alignment
+    div.classList.add(cls);
+    div.innerHTML = `<strong>${sender}:</strong> ${messageText}`;
     chatMessages.appendChild(div);
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
-
-// start WebSocket connection on page load
-window.onload = () => {
-    connectWebSocket();
-};
