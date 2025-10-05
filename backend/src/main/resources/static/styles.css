@@ -27,14 +27,14 @@ body {
   border-radius: 15px;
   width: 420px;
   max-width: 90%;
-  box-shadow: 0 0 40px rgba(0, 200, 255, 0.35);
+  box-shadow: 0 0 40px rgba(37, 211, 102, 0.35); /* green glow */
 }
 
 .auth-container h1 {
   font-size: 32px;
   margin-bottom: 10px;
   text-align: center;
-  color: #00c8ff;
+  color:#25D366;
 }
 
 .auth-subtitle {

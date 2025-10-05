@@ -39,7 +39,7 @@ public class AuthController {
 
         if (request.getDisplayName() == null || request.getDisplayName().isEmpty()) {
             request.setDisplayName(request.getName());
-        }
+        } 
 
         userRepository.save(request);
         return ResponseEntity.ok("Signup successful");
